@@ -2,34 +2,38 @@ import pygame
 import time
 import random
 
-pygame.init()
+pygame.init()  # Checks if the module was initialized successfully
 
 white = (255, 255, 255)
 black = (0, 0, 0)
 brown = (170, 105, 57)
 red = (204, 40, 40)
 light_brown = (255, 199, 157)
-
+# colour = (red, green, blue)
 
 display_width = 800
 display_height = 600
 
 gameDisplay = pygame.display.set_mode((display_width, display_height))
+# The paramiter must be a tuple (width, height).
 
-pygame.display.set_caption('home alone')
+pygame.display.set_caption('home alone')  # Title of the window
+
 
 clock = pygame.time.Clock()
 
 block_size = 20
 
+
 font = pygame.font.SysFont(None, 25)
 font2 = pygame.font.SysFont('felixtitling', 50)
 
 
-def snake(block_size, snakeList):
+def snake(block_size, snakeList):  # The head of the snake
     for XnY in snakeList:
         pygame.draw.rect(gameDisplay, brown, [XnY[0], XnY[1],
                                               block_size, block_size])
+    # .draw paramiters: (position, colour, [x-axis, y-axis, width, height])
 
 
 def text_objects(text, color, font):
@@ -89,12 +93,13 @@ def gameLoop():
     gameExit = False
     gameOver = False
 
-    lead_x = display_width/2
+    lead_x = display_width/2  # Resolution/2 = the middle of the screen
     lead_y = display_height/2
 
     lead_x_change = 0
     lead_y_change = 0
 
+    # lead = The Position of the head of the snake
     randAppleX = round(random.randrange(20, display_width-20-block_size)/block_size)*block_size
     randAppleY = round(random.randrange(20, display_height-20-block_size)/block_size)*block_size
 
@@ -125,13 +130,19 @@ def gameLoop():
             if event.type == pygame.QUIT:
                 gameExit = True
 
-            if event.type == pygame.KEYDOWN:
+            if event.type == pygame.KEYDOWN:  # "If a key is pressed"
                 if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                     lead_x_change = -block_size
                     lead_y_change = 0
+                    if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                        lead_x_change = -block_size
+                        lead_y_change = 0
                 elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                     lead_x_change = block_size
                     lead_y_change = 0
+                    if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                        lead_x_change = block_size
+                        lead_y_change = 0
                 elif event.key == pygame.K_UP or event.key == pygame.K_w:
                     lead_y_change = -block_size
                     lead_x_change = 0
@@ -139,13 +150,13 @@ def gameLoop():
                     lead_y_change = block_size
                     lead_x_change = 0
 
-        if lead_x >= display_width-10 or lead_x < 10 or lead_y >= display_height-10 or lead_y < 10:
+        if lead_x >= display_width or lead_x < 0 or lead_y >= display_height or lead_y < 0:
             gameOver = True
 
         lead_x += lead_x_change
         lead_y += lead_y_change
 
-        gameDisplay.fill(light_brown)
+        gameDisplay.fill(light_brown)  # Background colour
 
         # apple
         pygame.draw.rect(gameDisplay, red, [randAppleX, randAppleY, block_size, block_size])
@@ -170,10 +181,14 @@ def gameLoop():
             level = 0
 
         pygame.display.update()
+        # .update() refreshes only the necessary parts
+        # .flip() refreshes the entire display
 
         if lead_x == randAppleX and lead_y == randAppleY:
-            randAppleX = round(random.randrange(0, display_width-block_size)/block_size)*block_size
-            randAppleY = round(random.randrange(0, display_height-block_size)/block_size)*block_size
+            randAppleX = round(random.randrange(20, display_width -
+                                                20-block_size)/block_size)*block_size
+            randAppleY = round(random.randrange(20, display_height -
+                                                20-block_size)/block_size)*block_size
             snakeLength += 1
             points += 1
             level += 1
